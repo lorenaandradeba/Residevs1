@@ -18,6 +18,7 @@ int menuEmbarque();
 bool switCaseEmbarque(int op, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros, vector<Embarca> &embarques);
 void cadastraEmbaque();
 void cadastrarEmbarque(int umaPessoa, int umRoteiro, vector<Embarca> &embarques, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros);
+void listarEmbarques(std::vector<Embarca>& embarques);
 
 int gestaoDeEmbarque(vector<Passageiros> &passageiros, vector<Roteiros> &roteiros, vector<Embarca> &embarques){
 
@@ -66,7 +67,8 @@ bool switCaseEmbarque(int op, vector<Passageiros> &passageiros, vector<Roteiros>
                     // Alterar;
                 break;
             case 4: 
-                    // Lista;
+               listarEmbarques(embarques);
+                // Lista;
                 break;
             case 5:
                     
@@ -125,4 +127,22 @@ void cadastrarEmbarque(int indice_pessoa, int indice_roteiro, vector<Embarca> &e
     embarcar.roteiro = roteiros[indice_roteiro]; //passando os dados de um roteiro
 
     embarques.push_back(embarcar); //Registra o Embarque na coleção de embarques
+}
+
+void listarEmbarques(std::vector<Embarca>& embarques) {
+    std::cout << "Lista de Embarques:" << std::endl;
+    for (const Embarca& embarque : embarques) {
+        std::cout << "Realizada: " << embarque.realizada << std::endl;
+        std::cout << "Data de Embarque: " << embarque.data.data << std::endl;
+        std::cout << "Hora de Embarque: " << embarque.data.hora << std::endl;
+        std::cout << "Duração: " << embarque.duracao << std::endl;
+        std::cout << "Nome do Passageiro: " << embarque.passageiro.nome << std::endl;
+        std::cout << "CPF do Passageiro: " << embarque.passageiro.cpf << std::endl;
+        std::cout << "Data de Nascimento do Passageiro: " << embarque.passageiro.dataNascimento << std::endl;
+        std::cout << "Número de Autorização: " << embarque.passageiro.numAltorizacao << std::endl;
+        std::cout << "Origem do Roteiro: " << embarque.roteiro.origem << std::endl;
+        std::cout << "Destino do Roteiro: " << embarque.roteiro.destino << std::endl;
+        std::cout << "Data e Hora Previstas: " << embarque.roteiro.data_hora_prevista.data << " " << embarque.roteiro.data_hora_prevista.hora << std::endl;
+        std::cout << std::endl;
+    }
 }

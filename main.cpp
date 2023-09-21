@@ -22,12 +22,15 @@ int main (){
     novaPassoa.numAltorizacao = 1;
     novaPassoa.dataNascimento = "22/03/2001";
 
+    passageiros.push_back(novaPassoa);
+    
     Roteiros novoRoteiro;
     novoRoteiro.codigo = 1;
     novoRoteiro.origem = "Ilheus";
     novoRoteiro.destino = "Serra Grande";
     novoRoteiro.data_hora_prevista.data = "25/05/2025";
     novoRoteiro.data_hora_prevista.hora = 2;
+    roteiros.push_back(novoRoteiro);
 
     bool continuar = true;
 
