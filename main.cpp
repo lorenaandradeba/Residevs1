@@ -31,8 +31,8 @@ struct Embarca{
     Data data;//data real de embarque
     int hora;//hora real de embarque
     int duracao;// duração real;
-    vector<Passageiro> passageiros;//Embarque[0], passageiro[i], 
-    int cod_roteiro;
+    Passageiro passageiro;
+    Roteiro roteiro;
 }; 
 struct Ocorrencia{
     char realizada;
@@ -51,6 +51,7 @@ void excluirPassageiro(vector<Passageiro> &passageiros);
 void listarPassageiros(vector<Passageiro> passageiros);
 void localizarPassageiroCPF(vector<Passageiro> passageiros);
 bool verificaPassageiroExiste(vector<Passageiro> passageiros, string cpf);
+Passageiro getPassageiro(vector<Passageiro> passageiros, string cpf);
 int retornaIdade(Data dtNascimento);
 //Funcoes de Passageiro
 
@@ -62,12 +63,14 @@ void excluirRoteiro(vector<Roteiro> &roteiros);
 void listarRoteiros(vector<Roteiro> roteiros);
 void localizarRoteiro(vector<Roteiro> roteiros);
 bool verificaRoteiroExiste(vector<Roteiro> roteiros, int codigo);
+Roteiro getRoteiro(vector<Roteiro> roteiros, int codigo);
 //Funcoes de Roteiro
 
 //Funcoes de Embarque
 void menuEmbarque();
-int gestaoEmbarque(vector<Embarca> &embarques);
-void listarEmbarque(vector<Embarca> embarques, vector<Roteiro> roteiros);
+int gestaoEmbarque(vector<Embarca> &embarques, vector<Passageiro> passageiros, vector<Roteiro> roteiros);
+void incluirEmbarque(vector<Embarca> &embarques, vector<Passageiro> passageiros, vector<Roteiro> roteiros);
+void listarEmbarque(vector<Embarca> embarques);
 //Funcoes de Embarque
 
 
@@ -95,7 +98,7 @@ int main(){
         }else if (op == 2){
             gestaoRoteiro(roteiros);//função dentro do arquivo roteiro.cpp
         }else if (op == 3){
-            gestaoEmbarque(embarques);//função dentro do arquivo roteiro.cpp
+            gestaoEmbarque(embarques, passageiros, roteiros);//função dentro do arquivo roteiro.cpp
         }else{
             validar = false;
         }
@@ -309,6 +312,13 @@ bool verificaPassageiroExiste(vector<Passageiro> passageiros, string cpf){
 
     }
     return false;
+}
+Passageiro getPassageiro(vector<Passageiro> passageiros, string cpf){
+    for (const Passageiro &p : passageiros) {
+        if (p.cpf == cpf)
+            return p;
+    }
+    return Passageiro{};
 }
 int retornaIdade(Data dtNascimento){
     // Obtém a data e hora atual
@@ -606,6 +616,15 @@ bool verificaRoteiroExiste(vector<Roteiro> roteiros, int codigo){
     return false;
 }
 
+Roteiro getRoteiro(vector<Roteiro> roteiros, int codigo){
+    for (const Roteiro &p : roteiros) {
+        if (p.codigo == codigo)
+            return p;
+
+    }
+    return Roteiro{};
+}
+
 void menuEmbarque(){
     cout << "-----------------------------------------------------------------------------" << endl;
     cout <<  setw(45) << "Menu de Embarques" << endl;
@@ -617,7 +636,7 @@ void menuEmbarque(){
     cout << "0. Sair" <<endl;
     cout << "Digite uma opção:";
 }
-int gestaoEmbarque(vector<Embarca> &embarques, vector<Roteiro> roteiros){
+int gestaoEmbarque(vector<Embarca> &embarques, vector<Passageiro> passageiros, vector<Roteiro> roteiros){
     bool validar = true;
     int op;
 
@@ -626,7 +645,7 @@ int gestaoEmbarque(vector<Embarca> &embarques, vector<Roteiro> roteiros){
         cin >> op;
         switch (op){
             case 1:
-                    //incluir
+                incluirEmbarque(embarques, passageiros, roteiros);   //incluir
                 break;
             case 2:
                     // excluir
@@ -635,7 +654,7 @@ int gestaoEmbarque(vector<Embarca> &embarques, vector<Roteiro> roteiros){
                     // Alterar;
                 break;
             case 4: 
-                listarEmbarque(embarques, roteiros);    // Lista;
+                listarEmbarque(embarques);    // Lista;
                 break;
             case 5:
                     
@@ -652,89 +671,110 @@ int gestaoEmbarque(vector<Embarca> &embarques, vector<Roteiro> roteiros){
 
     return 0;
 }
+void incluirEmbarque(vector<Embarca> &embarques, vector<Passageiro> passageiros, vector<Roteiro> roteiros){
+    string erro="";
+    int dia, mes, ano;
+    string cpf;
+    int cod_roteiro;
+    Data dataEmbarque;
+    int horaEmbarque;
+    int duracaoEmbarque;
+    char realizado;
+    Passageiro passageiroAtual;
+    Roteiro roteiroAtual;
 
+    //Não permite incluir um cpf em branco
+    do{  
+        cout << "Digite o CPF:" << endl;
+        cin >> cpf;
+    } while (cpf=="");
+    
+    //Não permite incluir um cpf repetido
+    bool encontrou_cpf = verificaPassageiroExiste(passageiros, cpf);
+
+    if (encontrou_cpf){
+        cout << "Digite o codigo do roteiro:" << endl;
+        cin >> cod_roteiro;
+        bool encontrou_codigo = verificaRoteiroExiste(roteiros, cod_roteiro);
+            if (encontrou_codigo){
+                 //não permite incluir uma data invalida
+                do {
+                    cout << "Qual a data: Dia:" << endl;
+                    cin >> dia;
+                    cout << "Mes:" << endl;
+                    cin >> mes;
+                    cout << "Ano:" << endl;
+                    cin >> ano;
+                    inicializarData(dia, mes, ano, erro, dataEmbarque);
+                    if (erro!="")
+                        cout << "Erro ao inicializar data: " << erro << endl;
+                } while (erro != "");
+
+                //não permite incluir uma hora fora do intervalo previsto
+                do
+                {
+                    cout << "Digite hora: intervalo permitido [1-20]" << endl;
+                    cin >> horaEmbarque;
+                } while (horaEmbarque < 1 || horaEmbarque > 20);
+
+
+                //não permite incluir uma duracao maior que 10
+                do
+                {
+                    cout << "Digite duração para esse roteiro: intervalo permitido [1-10]" << endl;
+                    cin >> duracaoEmbarque;
+                } while (duracaoEmbarque < 1 || duracaoEmbarque > 10);
+                
+                do
+                {
+                    cout << "O embarque foi realizado? (s/n)" << endl;
+                    cin >> realizado;
+                } while (realizado != 's' && realizado != 'S' && realizado != 'n' && realizado != 'N' );
+                
+                Embarca atual;
+
+                atual.data = dataEmbarque;
+                atual.hora = horaEmbarque;
+                atual.duracao = duracaoEmbarque;
+                atual.realizada = realizado;
+                atual.passageiro = getPassageiro(passageiros,  cpf);
+                atual.roteiro = getRoteiro(roteiros,  cod_roteiro);
+
+                embarques.push_back(atual);
+            }
+
+
+    }
+
+                
+    
+        
+    
+
+
+}
 //void listarEmbarque(vector<Embarca> embarques) //se dentro da struct tiver o Objeto Roteiro
-void listarEmbarque(vector<Embarca> embarques, vector<Roteiro> roteiros){
-    Data d1, d2, d3, d4, d5, d6;
-    string msgErro = "";
-    inicializarData(1, 1, 1990, msgErro, d1);
-    inicializarData(1, 1, 2000, msgErro, d2);
-    inicializarData(1, 10, 2023, msgErro, d3);
-    inicializarData(19, 10, 2023, msgErro, d4);
-    inicializarData(30, 10, 2023, msgErro, d5);
-    inicializarData(31, 10, 2023, msgErro, d6);
-
-    // Criar um vetor de Passageiros
-    vector<Passageiro> p1;
-    Passageiro passageiro1 = {"12345678901", "João", d1, 123};
-    Passageiro passageiro2 = {"98765432101", "Maria", d2, 456};
-    p1.push_back(passageiro1);
-    p1.push_back(passageiro2);// Criar um vetor de Passageiros
-
-
-    vector<Passageiro> p2;
-    Passageiro passageiro145 = {"1414141", "Joaquina", d1, 0};
-    Passageiro passageiro255 = {"777555", "Paulo", d2, 0};
-    p2.push_back(passageiro145);
-    p2.push_back(passageiro255);
-
-    
-    vector<Passageiro> p3;
-    Passageiro passageiro111 = {"22222222222", "Romilce Santos", d1, 0};
-    Passageiro passageiro244 = {"4444444440", "Joao Gabriel", d2, 0};
-    p3.push_back(passageiro111);
-    p3.push_back(passageiro244);
-    
-    vector<Passageiro> p4;
-    Passageiro passageiro11 = {"66666", "Paulo de Tarco", d1, 0};
-    Passageiro passageiro33 = {"86666666668", "Ricardo Mendes", d2, 0};
-    p4.push_back(passageiro11);
-    p4.push_back(passageiro33);
-
-    // Criar um vetor de Roteiros
-    vector<Roteiro> r1;
-    Roteiro roteiro1 = {1, d3, 14, 2, "Sao Leopoldo", "Santa Catarina"};
-    Roteiro roteiro2 = {2, d4, 16, 3, "Jequie", "Itecare"};
-    r1.push_back(roteiro1);
-    r1.push_back(roteiro2);
-
-    // Criar um vetor de Embarca e preenchê-lo com os dados
-    vector<Embarca> embarcas;
-    Embarca embarca1 = {'s', d3, 14, 2, p1, 1};
-    Embarca embarca2 = {'n', d4, 14, 2, p2, 2};
-    Embarca embarca3 = {'s', d5, 14, 2, p3, 1};
-    Embarca embarca4 = {'n', d6, 14, 2, p4, 2};
-    
-    
-    embarcas.push_back(embarca1);
-    embarcas.push_back(embarca2);
-    embarcas.push_back(embarca3);
-    embarcas.push_back(embarca4);
-
+void listarEmbarque(vector<Embarca> embarques){
     cout << "-----------------------------------------------------------------------------" << endl;
     cout << left << setw(50) << "Embarques Realizados" << endl;
     cout << "-----------------------------------------------------------------------------" << endl;
-    for (const Embarca &e : embarcas) {
-        if (e.realizada=='s')
+    for (const Embarca &e : embarques) {
+        if (e.realizada=='s' || e.realizada=='S')
         {    
             cout << "Data de Embarque: " << dataParaString(e.data) << endl;
             cout << "Hora de Embarque: " << e.hora << endl;
             cout << "Duração: " << e.duracao << " horas" << endl << endl;
             //cout << left << setw(19) << dataParaString(e.data) << setw(13) << e.hora << e.duracao << endl;
-            cout << "Passageiros:" << endl;
+            cout << "Passageiro:" << endl;
             cout << "--------------------" << endl;
-            for (const Passageiro& passageiro : e.passageiros) {
-                cout << "\tCPF: " << passageiro.cpf << ", Nome: " << passageiro.nome << endl;
-            }
+            cout << "\tCPF: " << e.passageiro.cpf << ", Nome: " << e.passageiro.nome << endl;
+            
             cout << endl;
             
             cout << "Roteiro:" << endl;
             cout << "--------------------" << endl;
-            for (const Roteiro& roteiro : roteiros) {
-                if(roteiro.codigo == e.cod_roteiro)
-                    cout << "\tCódigo: " << roteiro.codigo << ", Origem: " << roteiro.origem << ", Destino: " << roteiro.destino << endl;
-            }
-
+            cout << "\tCódigo: " << e.roteiro.codigo << ", Origem: " << e.roteiro.origem << ", Destino: " << e.roteiro.destino << endl;
+            
             cout << "-----------------------------------------------------------------------------" << endl;
         }
     }
@@ -742,28 +782,24 @@ void listarEmbarque(vector<Embarca> embarques, vector<Roteiro> roteiros){
     cout << "-----------------------------------------------------------------------------" << endl;
     cout << left << setw(50) << "Embarques não Realizados" << endl;
     cout << "-----------------------------------------------------------------------------" << endl;
-    for (const Embarca &e : embarcas) {
+    for (const Embarca &e : embarques) {
         if (e.realizada!='s'){
             cout << "Data de Embarque: " << dataParaString(e.data) << endl;
             cout << "Hora de Embarque: " << e.hora << endl;
             cout << "Duração: " << e.duracao << " horas" << endl << endl;
             //cout << left << setw(19) << dataParaString(e.data) << setw(13) << e.hora << e.duracao << endl;
-            cout << "Passageiros:" << endl;
+            cout << "Passageiro:" << endl;
             cout << "--------------------" << endl;
-            for (const Passageiro& passageiro : e.passageiros) {
-                cout << "\tCPF: " << passageiro.cpf << ", Nome: " << passageiro.nome << endl;
-            }
+            cout << "\tCPF: " << e.passageiro.cpf << ", Nome: " << e.passageiro.nome << endl;
+            
             cout << endl;
             
             cout << "Roteiro:" << endl;
             cout << "--------------------" << endl;
-            for (const Roteiro& roteiro : roteiros) {
-                if(roteiro.codigo == e.cod_roteiro)
-                    cout << "\tCódigo: " << roteiro.codigo << ", Origem: " << roteiro.origem << ", Destino: " << roteiro.destino << endl;
-            }
+            cout << "\tCódigo: " << e.roteiro.codigo << ", Origem: " << e.roteiro.origem << ", Destino: " << e.roteiro.destino << endl;
+            
             cout << "-----------------------------------------------------------------------------" << endl;
-    }
-
+        }
     }   
     
     cout << "-----------------------------------------------------------------------------" << endl;
