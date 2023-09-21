@@ -67,7 +67,7 @@ int menuPrincipal(){
     cout << "3-Gerenciar Embarque" <<endl;
     cout << "0-Sair" <<endl;
     cout << "Digite uma opcao:";
-    cout <<"----------------------------" <<endl;
+
     cin >>op;
     cout<<endl; 
     return op;
