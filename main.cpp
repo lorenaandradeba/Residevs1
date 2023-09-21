@@ -1,48 +1,74 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "validar.cpp"
 
-
-#include "passageiro.cpp"
-#include "roteiro.cpp"
+#include "passageiro.cpp" //arquivo que gerencia os passageiros;
+#include "roteiro.cpp"//arquivo que gerencia os roteiros
 #include "embarca.cpp"
-#include "data.cpp"
-#include "ocorrencia.cpp"
 
 using namespace std;
+int menuPrincipal();
+bool gerenciarAcessos(int op, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros, vector<Embarca> &embarques);
 
-void menu();
-int main(){
-    vector<Embarca> embarques;// vectores principais;
-    vector<Passageiro> passageiros;//vectores principais;
-    vector<Roteiro> roteiros; //vectores principais;
-    vector<Ocorrencia> ocorrencia; //vectores principais;
-    bool validar = true;
-    int op;
+int main (){
+    vector<Passageiros> passageiros;//vectores principais
+    vector<Roteiros> roteiros;//vectores principais
+    vector<Embarca> embarques;//vectores principais
+   
+    Passageiros novaPassoa;
+    novaPassoa.nome = "Daniel";
+    novaPassoa.cpf = "1";
+    novaPassoa.numAltorizacao = 1;
+    novaPassoa.dataNascimento = "22/03/2001";
+
+    Roteiros novoRoteiro;
+    novoRoteiro.codigo = 1;
+    novoRoteiro.origem = "Ilheus";
+    novoRoteiro.destino = "Serra Grande";
+    novoRoteiro.data_hora_prevista.data = "25/05/2025";
+    novoRoteiro.data_hora_prevista.hora = 2;
+
+    bool continuar = true;
 
     do{
-        menu();//menu pricipal dentro de main.cpp
-        cin >> op;
-        if ( op ==1 )
-            gestaoPassageiro(passageiros);//função dentro do arquivo passageiro.cpp
-        else if (op == 2)
-            gestaoRoteiro(roteiros);//função dentro do arquivo roteiro.cpp
-        else if(op==3)
-            gestaoEmbarque(embarques);//função dentro do arquivo embarcar.cpp
-        else if(op==4)
-            gestaoOcorrencia(ocorrencia);//função dentro do arquivo ocorrencia.cpp
-        else
-            validar = false;
-        
-    } while (validar);
-
+        //1ºparamentro uma opcao escolhida, 2º e 3º os vectores;
+        continuar = gerenciarAcessos(menuPrincipal(), passageiros, roteiros, embarques);
+        //o retono é true ou false para encerrar o acesso ou sair o while. na variavel continuar   
+    } while (continuar);//continuar a execução do  gerenciarAcessos sai do programa;
+    
     return 0;
+} 
+
+bool gerenciarAcessos(int op, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros, vector<Embarca> &embarques){
+     switch (op){
+        case 1:
+            gestaoDePassageiros(passageiros);// vai para o arquivo passageiro.cpp
+            break;
+        case 2:
+            gestaoDeRoteiros(roteiros);// vai para o arquivo roteiro.cpp
+            break;
+        case 3:
+            gestaoDeEmbarque(passageiros, roteiros, embarques);//3 vectores
+            break;
+        case 0:
+           return false;
+        default:
+                return true;////continuar o gerenciarAcesso o usuario digitou uma opçao invalida
+        }
+        return true;//continuar o gerenciarAcesso;
 }
-void menu(){
-    cout << "Bem vindo a Vans TransPaGente" <<endl;
-    cout << "1. Acessar Menu de Passageiro" << endl;
-    cout << "2. Acessar Menu de Roteiro" << endl; 
-    cout << "3. Acessar Menu de Embarque" << endl; 
-    cout << "4. Gestão de Ocorrências" << endl; 
-    cout << "0. Sair"<< endl;
+
+int menuPrincipal(){
+    int op = 0;
+    cout <<endl <<"----------------------------" <<endl;
+    cout << "1-Gestao de Passageiro" <<endl;
+    cout << "2-Gerenciar Roteiro" <<endl;
+    cout << "3-Gerenciar Embarque" <<endl;
+    cout << "0-Sair" <<endl;
+    cout << "Digite uma opcao:";
+    cout <<"----------------------------" <<endl;
+    cin >>op;
+    cout<<endl; 
+    return op;
 }

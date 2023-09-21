@@ -2,29 +2,62 @@
 #include <vector>
 
 using namespace std;
-void menuEmbarque();
+
 
 struct Embarca{
     char realizada;
     Data data;//data real de embarque
-    int hora;//hora real de embarque
-    int duracao;// duração real;
-    vector<Passageiro> passageiros;//Embarque[0], passageiro[i], 
-    int cod_roteiro;
+    string duracao;// duração real;
+    Passageiros passageiro;//todos os dados de passageiros
+    Roteiros roteiro;//todos os dados de roteiro
+   
 }; 
 
 
-int gestaoEmbarque(vector<Embarca> &embarques){
+int menuEmbarque();
+bool switCaseEmbarque(int op, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros, vector<Embarca> &embarques);
+void cadastraEmbaque();
+void cadastrarEmbarque(int umaPessoa, int umRoteiro, vector<Embarca> &embarques, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros);
 
-    bool validar = true;
-    int op;
+int gestaoDeEmbarque(vector<Passageiros> &passageiros, vector<Roteiros> &roteiros, vector<Embarca> &embarques){
 
+    bool continuar = true;
     do{
-        menuEmbarque();
-        cin >> op;
-        switch (op){
+       continuar = switCaseEmbarque(menuEmbarque(), passageiros, roteiros, embarques); 
+    } while (continuar);
+    
+
+    return 0;
+}
+
+bool switCaseEmbarque(int op, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros, vector<Embarca> &embarques){
+    int codigo;
+    string cpf;
+    int indixCpf;//posição(indice) no meu vector para buscar
+    int indixCodigo;//posição(indice) no meu vector para buscar
+    switch (op){
             case 1:
-                    //incluir
+                    //incluir embarque
+                    //solicitar cpf e o codigo do passageiro;
+                    cin.ignore();
+                    cout <<endl << "Digite um CPF: ";
+                    getline(cin, cpf);
+                    
+                    cout << "Digite o codigo: ";
+                    cin >> codigo;
+                    cout<<endl;
+
+                    ///verificar se o cpf esta cadastrado em passsageiro e verificar se roteiro esta cadastrado
+                    indixCpf = localizarPassageiroPorCPF(passageiros, cpf);//pega o indece -1 não encontrou ou é a posição
+                    indixCodigo = localizarRoteiro(roteiros, codigo);//pega o indece -1 não encontrou ou é a posição
+                   
+                    if((indexCpf != -1) && (indexCodigo !=-1)){
+                         cout << endl <<"Dados Validos!"<< endl;
+                        //CadastarEmbarque
+                            cadastrarEmbarque(indexCpf, indexCodigo, embarques, passageiros, roteiros);
+                    }else{
+                         cout << endl << "Dados Invalidos"<< endl;
+                     }
                 break;
             case 2:
                     // excluir
@@ -39,18 +72,18 @@ int gestaoEmbarque(vector<Embarca> &embarques){
                     
                 break;
             case 0:
-                validar = false;
+                return false;
                 break;
             default:
                 cout << "Opção Invalida!!!" <<endl;
                 break;
         }
-    } while (validar);
-    
-
-    return 0;
+    return true;
 }
-void menuEmbarque(){
+
+int menuEmbarque(){
+
+     int op;
     cout << "Bem vindo a Vans TransPaGente" << endl;
     cout << "1-Incluir um Novo embarque"<< endl;
     cout << "2-Excluir registro de embarque"<< endl; // pode ser por cpf
@@ -58,4 +91,38 @@ void menuEmbarque(){
     cout << "4-Listar todos os embarques" << endl; //listar o que os pasageiros e seus respectivos roteiro?
     cout << "0-Sair" <<endl;
     cout << "Digite uma opção:";
+    cin >> op;
+    
+    return op; //rotana o opçao desejada
+}
+
+void cadastrarEmbarque(int umaPessoa, int umRoteiro, vector<Embarca> &embarques, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros){
+    Embarca embarcar;//struct do tipo embarcar
+
+    char realizada;
+    Data data;//data real de embarque //struc do data
+    string duracao;// duração real;
+
+    cout <<"O passageiro embarcou S/N:" <<endl;//validar esse parametro
+    cin >> realizada;
+    cin.ignore(); 
+    embarcar.realizada = realizada;///tipo struc
+
+    cout <<"Data de embarque: " << endl;
+    getline(cin, data.data);
+    cin.ignore(); 
+    embarcar.data.data = data.data;
+    
+    cout <<"Hora real do embarque: " << endl;
+    cin >> data.hora;
+    embarcar.data.hora = data.hora;
+
+    cout <<"Duracao da Vigem: " << endl;
+    getline(cin, duracao);
+    cin.ignore();
+
+    embarcar.passageiro = passageiros[umaPessoa]; //passando os dados de um passageiro
+    embarcar.roteiro = roteiros[umRoteiro]; //passando os dados de um roteiro
+
+    embarques.push_back(embarcar); //Registra o Embarque na coleção de embarques
 }
