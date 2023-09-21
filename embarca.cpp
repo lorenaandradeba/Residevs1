@@ -5,7 +5,7 @@ using namespace std;
 
 
 struct Embarca{
-    char realizada;
+    string realizada;
     Data data;//data real de embarque
     string duracao;// duração real;
     Passageiros passageiro;//todos os dados de passageiros
@@ -33,8 +33,8 @@ int gestaoDeEmbarque(vector<Passageiros> &passageiros, vector<Roteiros> &roteiro
 bool switCaseEmbarque(int op, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros, vector<Embarca> &embarques){
     int codigo;
     string cpf;
-    int indixCpf;//posição(indice) no meu vector para buscar
-    int indixCodigo;//posição(indice) no meu vector para buscar
+    int indice_pessoa;//posição(indice) no meu vector para buscar
+    int indice_roteiro;//posição(indice) no meu vector para buscar
     switch (op){
             case 1:
                     //incluir embarque
@@ -48,13 +48,13 @@ bool switCaseEmbarque(int op, vector<Passageiros> &passageiros, vector<Roteiros>
                     cout<<endl;
 
                     ///verificar se o cpf esta cadastrado em passsageiro e verificar se roteiro esta cadastrado
-                    indixCpf = localizarPassageiroPorCPF(passageiros, cpf);//pega o indece -1 não encontrou ou é a posição
-                    indixCodigo = localizarRoteiro(roteiros, codigo);//pega o indece -1 não encontrou ou é a posição
+                    indice_pessoa = localizarPassageiroPorCPF(passageiros, cpf);//pega o indece -1 não encontrou ou é a posição
+                    indice_roteiro = localizarRoteiro(roteiros, codigo);//pega o indece -1 não encontrou ou é a posição
                    
-                    if((indexCpf != -1) && (indexCodigo !=-1)){
+                    if((indice_roteiro != -1) && (indice_pessoa !=-1)){
                          cout << endl <<"Dados Validos!"<< endl;
                         //CadastarEmbarque
-                            cadastrarEmbarque(indexCpf, indexCodigo, embarques, passageiros, roteiros);
+                            cadastrarEmbarque(indice_pessoa, indice_roteiro, embarques, passageiros, roteiros);
                     }else{
                          cout << endl << "Dados Invalidos"<< endl;
                      }
@@ -96,15 +96,15 @@ int menuEmbarque(){
     return op; //rotana o opçao desejada
 }
 
-void cadastrarEmbarque(int umaPessoa, int umRoteiro, vector<Embarca> &embarques, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros){
+void cadastrarEmbarque(int indice_pessoa, int indice_roteiro, vector<Embarca> &embarques, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros){
     Embarca embarcar;//struct do tipo embarcar
 
-    char realizada;
+    string realizada;
     Data data;//data real de embarque //struc do data
     string duracao;// duração real;
 
     cout <<"O passageiro embarcou S/N:" <<endl;//validar esse parametro
-    cin >> realizada;
+    getline(cin, realizada);
     cin.ignore(); 
     embarcar.realizada = realizada;///tipo struc
 
@@ -121,8 +121,8 @@ void cadastrarEmbarque(int umaPessoa, int umRoteiro, vector<Embarca> &embarques,
     getline(cin, duracao);
     cin.ignore();
 
-    embarcar.passageiro = passageiros[umaPessoa]; //passando os dados de um passageiro
-    embarcar.roteiro = roteiros[umRoteiro]; //passando os dados de um roteiro
+    embarcar.passageiro = passageiros[indice_pessoa]; //passando os dados de um passageiro
+    embarcar.roteiro = roteiros[indice_roteiro]; //passando os dados de um roteiro
 
     embarques.push_back(embarcar); //Registra o Embarque na coleção de embarques
 }
