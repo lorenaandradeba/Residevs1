@@ -17,6 +17,7 @@ void listarPorRoteiro(vector<Embarca>& embarques);
 void excluirOcorrencia(vector<Embarca> &embarques);
 void alterarOcorrencia(vector<Embarca> &embarques);
 void registrarOcorrenciaPorRoteiro(vector<Embarca> &embarques);
+void listarTodasOcorrencias(vector<Embarca>& embarques);
 int gestaoOcorrencia(vector<Embarca> &embarques){
     bool validar = true;
     int op;
@@ -327,6 +328,16 @@ void registrarOcorrenciaPorRoteiro(vector<Embarca> &embarques){
             }
             */
         }
+    }
+}
+void listarTodasOcorrencias(vector<Embarca>& embarques) {
+    for (Embarca& e : embarques) {
+        std::cout<< endl << "Descrição: " << e.ocorrencia.descricao << std::endl;
+        std::cout << "Data: " << e.ocorrencia.data.data << std::endl; 
+        std::cout << "Número da Apólice: " << e.ocorrencia.numApolice << std::endl;
+        std::cout << "Embarque: " << e.ocorrencia.embarque.roteiro.codigo << std::endl; 
+        std::cout << "Passageiro: " << e.ocorrencia.embarque.passageiro.nome << std::endl; 
+        std::cout << "--------------------------" << std::endl;
     }
 }
 void menuOcorrencia(){
