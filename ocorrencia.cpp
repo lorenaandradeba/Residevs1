@@ -31,7 +31,7 @@ int gestaoOcorrencia(vector<Embarca> &embarques){
                 excluirOcorrencia(embarques);// excluir
                 break;
             case 3:
-                    // Alterar;
+                alterarOcorrencia(embarques);   // Alterar;
                 break;
             case 4: 
                 listarPorPassageiro(embarques);   // Listar passageiro;
@@ -203,7 +203,7 @@ void alterarOcorrencia(vector<Embarca> &embarques)
     {
         cout << "Dados Validos!" << endl;
 
-        string nomePassageiro = embarques[i].passageiro.nome;
+        string nomePassageiro = embarques[indice_embarque].passageiro.nome;
         
         //AlterarOcorrencia
         string flag;
