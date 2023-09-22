@@ -86,7 +86,7 @@ bool switCaseEmbarque(int op, vector<Passageiros> &passageiros, vector<Roteiros>
 int menuEmbarque(){
 
      int op;
-    cout << "Bem vindo a Vans TransPaGente" << endl;
+    cout << endl<< "==== Menu Embarque ====" << endl;
     cout << "1-Incluir um Novo embarque"<< endl;
     cout << "2-Excluir registro de embarque"<< endl; // pode ser por cpf
     cout << "3-Alterar "<< endl; 
