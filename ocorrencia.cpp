@@ -21,7 +21,7 @@ int gestaoOcorrencia(vector<Ocorrencia> &ocorrencias, vector<Embarca> &embarques
     int op;
     string cpf;
     int codigoRoteiro;
-    int indiceEmbarque = -1;
+    int indiceEmbarque;
 
     do{
         menuOcorrencia();
@@ -35,13 +35,14 @@ int gestaoOcorrencia(vector<Ocorrencia> &ocorrencias, vector<Embarca> &embarques
                 cout << "Digite um CPF: ";
                 getline(cin, cpf);
                 indiceEmbarque = buscarEmbarques(embarques, codigoRoteiro, cpf);
-
-                if(indiceEmbarque != -1){
-                    cout<<endl << "Cadastrando ocorrencia..." <<endl;
+                
+                if(indiceEmbarque != 1){
                     //cadastrarOcorrencia(ocorrencias, indiceEmbarque);
+                    cout<< "Cadastrando..." <<endl;
                 }else{
-                    cout <<endl <<"Embarque não localizado" <<endl;
+                    cout <<"embarque nao localizado"<<endl;
                 }
+
                 break;
             case 2:
                     //exluir
@@ -56,10 +57,6 @@ int gestaoOcorrencia(vector<Ocorrencia> &ocorrencias, vector<Embarca> &embarques
                    // Listar passageiro por roteiro;
                 break;
             case 6:
-                //registar ocorencia por roteiro
-                break;
-            //    
-            case 7:
             //lista todas as ocorencias.
                 listarTodasOcorrencias(ocorrencias);
                 break;
@@ -77,14 +74,12 @@ int gestaoOcorrencia(vector<Ocorrencia> &ocorrencias, vector<Embarca> &embarques
 }
 
 void menuOcorrencia(){
-
     cout << endl<< "==== Menu Ocorrência ====" << endl;
-
     cout << "1. Incluir uma ocorrência"<< endl; //solicita o CPF e Código
-    cout << "2. Excluir uma ocorrência"<< endl; //solicita o CPF e Código
-    cout << "3. Alterar uma ocorrência"<< endl; //solicita o CPF e Código
-    cout << "4. Listar todas as ocorrências por Passageiro" << endl; //Solicita o CPF
-    cout <<" 5. Incluir Ocorrencia por Roteiro" <<endl;
+    cout <<" 2. Incluir Ocorrencia por Roteiro" <<endl;
+    cout << "3. Excluir uma ocorrência"<< endl; //solicita o CPF e Código
+    cout << "4. Alterar uma ocorrência"<< endl; //solicita o CPF e Código
+    cout << "5. Listar todas as ocorrências por Passageiro" << endl; //Solicita o CPF
     cout << "6. Listar todas as ocorrências por Roteiro" << endl; //Solicita o Codigo
     cout << "0. Sair" <<endl;
     cout << "Digite uma opção:";

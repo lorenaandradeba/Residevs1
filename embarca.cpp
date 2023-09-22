@@ -12,7 +12,6 @@ struct Embarca{
     int duracao;// duração real;
     Passageiros passageiro;//todos os dados de passageiros
     Roteiros roteiro;//todos os dados de roteiro
-   
 }; 
 
 void cadastraEmbaque();
