@@ -16,6 +16,7 @@ void listarPorPassageiro(vector<Embarca>& embarques);
 void listarPorRoteiro(vector<Embarca>& embarques);
 void excluirOcorrencia(vector<Embarca> &embarques);
 void alterarOcorrencia(vector<Embarca> &embarques);
+void registrarOcorrenciaPorRoteiro(vector<Embarca> &embarques);
 int gestaoOcorrencia(vector<Embarca> &embarques){
     bool validar = true;
     int op;
@@ -38,6 +39,9 @@ int gestaoOcorrencia(vector<Embarca> &embarques){
                 break;
             case 5:
                 listarPorRoteiro(embarques);   // Listar roteiro;
+                break;
+            case 6:
+                registrarOcorrenciaPorRoteiro(embarques);   // registrar roteiro;
                 break;
             case 0:
                 validar = false;
@@ -280,6 +284,50 @@ int obterIndiceDoEmbarque(vector<Embarca> &embarques, string cpf, int codigo)
     }
 
     return indice_embarque;
+}
+void registrarOcorrenciaPorRoteiro(vector<Embarca> &embarques){
+     int codigo;
+    Ocorrencia ocorrencia_atual;
+
+    cout << "Digite o codigo do roteiro: " << endl;
+    cin >> codigo;
+
+    cout << "Descreva o que aconteceu:" << endl;
+    cin.ignore(); 
+    getline(cin, ocorrencia_atual.descricao);
+        
+    cout <<"Informe a data: " << endl;
+    cin.ignore(); 
+    getline(cin, ocorrencia_atual.data);
+
+    cout <<"Informe a hora: " << endl;
+    cin >> ocorrencia_atual.hora;
+    
+    cout <<"Informe o numero do Apolice: " << endl;
+    cin >> ocorrencia_atual.numApolice;
+
+    // rodar em todos os embarques
+    for (Embarca embarque: embarques) {
+        //ver se o embarque está vinculado ao código em questão
+        if (embarque.roteiro.codigo == codigo) {
+            embarque.ocorrencia = ocorrencia_atual; //sem perguntar nada
+            //embarque.ocorrencia.push_back(ocorrencia_atual.ocorrencia); //se for vetor
+
+            /*
+            // se for pra perguntar sobre sobrescrever
+            if (embarque.ocorrencia.descricao.empty())
+            {
+                cout << "Já existe uma ocorrencia vinculada a esse roteiro no embarque do passageiro " << embarque.passageiro.nome << ".\n
+                Deseja sobrescrever (s/n)?"
+
+                if (flag == "s") {
+                    embarque.ocorrencia = ocorrencia_atual.ocorrencia; //sem perguntar nada
+                    embarque.ocorrencia.push_back(ocorrencia_atual.ocorrencia); //se for vetor
+                }
+            }
+            */
+        }
+    }
 }
 void menuOcorrencia(){
     cout << endl<< "==== Menu Ocorrência ====" << endl;
