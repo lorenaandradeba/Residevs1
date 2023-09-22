@@ -14,9 +14,10 @@ struct Ocorrencia{
 void menuOcorrencia();
 void cadastrarOcorrencia(vector<Ocorrencia> &ocorrencia, vector<Embarca> &embarques, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros);
 Embarca localizarEmbarque(vector<Embarca> &embarques, string cpf, int codigo);
+void listarPorPassageiro(vector<Ocorrencia>& Ocorrencias);
+void listarPorRoteiro(vector<Ocorrencia>& Ocorrencias);
 
-
-int gestaoOcorrencia(vector<Ocorrencia> &ocorrencia, vector<Embarca> &embarques, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros){
+int gestaoOcorrencia(vector<Ocorrencia> &ocorrencias, vector<Embarca> &embarques, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros){
     bool validar = true;
     int op;
 
@@ -25,7 +26,7 @@ int gestaoOcorrencia(vector<Ocorrencia> &ocorrencia, vector<Embarca> &embarques,
         cin >> op;
         switch (op){
             case 1:
-                cadastrarOcorrencia(ocorrencia, embarques, passageiros, roteiros);
+                cadastrarOcorrencia(ocorrencias, embarques, passageiros, roteiros);
                 break;
             case 2:
                     // excluir
@@ -34,10 +35,10 @@ int gestaoOcorrencia(vector<Ocorrencia> &ocorrencia, vector<Embarca> &embarques,
                     // Alterar;
                 break;
             case 4: 
-                    // Listar passageiro;
+                listarPorPassageiro(ocorrencias);   // Listar passageiro;
                 break;
             case 5:
-                    // Listar roteiro;
+                listarPorRoteiro(ocorrencias);   // Listar roteiro;
                 break;
             case 0:
                 validar = false;
@@ -53,6 +54,48 @@ int gestaoOcorrencia(vector<Ocorrencia> &ocorrencia, vector<Embarca> &embarques,
 }
 
 
+void listarPorPassageiro(vector<Ocorrencia>& Ocorrencias) {
+    string cpf;
+    string nome="";
+    cout <<endl << "Informe o CPF: ";
+    cin.ignore();
+    getline(cin, cpf);
+    
+    for (const Ocorrencia& o : Ocorrencias) {
+        if(o.embarque.passageiro.cpf == cpf){
+            if (nome==""){
+                nome=o.embarque.passageiro.nome;
+                cout << "Lista de Ocorrencias do Passageiro: "<< nome <<":" << endl;
+            }
+            cout << "Descrição: " << o.descricao << endl;
+            cout << "Data: " << o.data << std::endl;
+            cout << "Hora: " << o.hora << std::endl;
+        
+            cout << endl;
+        }
+    }
+}
+
+void listarPorRoteiro(vector<Ocorrencia>& Ocorrencias) {
+    int codigo;
+    cout <<endl << "Informe o Código: ";
+    cin>>codigo;
+    string nome="";
+    
+    for (const Ocorrencia& o : Ocorrencias) {
+        if(o.embarque.roteiro.codigo == codigo){
+            if (nome==""){
+                nome=o.embarque.roteiro.codigo;
+                cout << "Lista de Ocorrencias do Roteiro: "<< nome <<":" << endl;
+            }
+            cout << "Descrição: " << o.descricao << endl;
+            cout << "Data: " << o.data << endl;
+            cout << "Hora: " << o.hora << std::endl;
+        
+            cout << endl;
+        }
+    }
+}
 Embarca localizarEmbarque(vector<Embarca> &embarques, string cpf, int codigo){
     for (const Embarca &e : embarques) {
         if (e.passageiro.cpf == cpf && e.roteiro.codigo == codigo){
@@ -68,8 +111,8 @@ void cadastrarOcorrencia(vector<Ocorrencia> &ocorrencia, vector<Embarca> &embarq
     int indice_roteiro;
     Embarca embarque;
 
-    cin.ignore();
     cout <<endl << "Informe o CPF: ";
+    cin.ignore();
     getline(cin, cpf);
                     
     cout << "Digite o codigo: ";
@@ -122,7 +165,6 @@ void menuOcorrencia(){
     cout << "3. Alterar uma ocorrência"<< endl; //solicita o CPF e Código
     cout << "4. Listar todas as ocorrências por Passageiro" << endl; //Solicita o CPF
     cout << "5. Listar todas as ocorrências por Roteiro" << endl; //Solicita o Codigo
-    cout << "5. Listar todas as ocorrências por Roteiro" << endl; //Solicita o Codigo   
     cout << "0. Sair" <<endl;
     cout << "Digite uma opção:";
 }
