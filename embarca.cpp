@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <ctime>
 
 using namespace std;
 
@@ -19,7 +20,8 @@ void cadastrarEmbarque(int umaPessoa, int umRoteiro, vector<Embarca> &embarques,
 void listarEmbarques(vector<Embarca>& embarques);
 void excluirEmbarque(vector<Embarca>& embarques, int indice);
 int buscarEmbarques(vector<Embarca>& embarques, int codigo, string& cpf);
-
+void alterarEmbarca(vector<Embarca>& vetorEmbarca, int indice);
+void listarPassageirosEmbarcados(const vector<Embarca> &vetorEmbarca, int codigoRoteiro);
 
 int menuEmbarque();
 bool switCaseEmbarque(int op, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros, vector<Embarca> &embarques);
@@ -62,7 +64,8 @@ bool switCaseEmbarque(int op, vector<Passageiros> &passageiros, vector<Roteiros>
                     ///verificar se o cpf esta cadastrado em passsageiro e verificar se roteiro esta cadastrado
                     indice_pessoa = localizarPassageiroPorCPF(passageiros, cpf);//pega o indece -1 não encontrou ou é a posição
                     indice_roteiro = localizarRoteiro(roteiros, codigo);//pega o indece -1 não encontrou ou é a posição
-                   
+                    
+                    
                     if((indice_roteiro != -1) && (indice_pessoa !=-1)){
                          cout << endl <<"Dados Validos!"<< endl;
                         //CadastarEmbarque
@@ -72,18 +75,19 @@ bool switCaseEmbarque(int op, vector<Passageiros> &passageiros, vector<Roteiros>
                      }
                 break;
             case 2:
+                //Excuir
+               
+                cin.ignore();
+                cout << "Digite o codigo: ";
+                cin >> codigo;
+
+                listarPassageirosEmbarcados(embarques, codigo);
 
                 cin.ignore();
                 cout << "Digite um CPF: ";
                 getline(cin, cpf);
 
-                cin.ignore();
-                cout << "Digite o codigo: ";
-                cin >> codigo;
                 
-                
-               
-
                 indice_embarque = buscarEmbarques(embarques, codigo, cpf);
 
                 if (indice_embarque != -1) {
@@ -94,7 +98,18 @@ bool switCaseEmbarque(int op, vector<Passageiros> &passageiros, vector<Roteiros>
 
                 break;
             case 3:
-                    // Alterar;
+                
+                // Alterar
+                cin.ignore();
+                cout << "Digite o codigo: ";
+                cin >> codigo;
+                listarPassageirosEmbarcados(embarques, codigo);
+
+                cin.ignore();
+                cout << "Digite um CPF: ";
+                getline(cin, cpf);
+                alterarEmbarca(embarques, buscarEmbarques(embarques, codigo, cpf));
+                
                 break;
             case 4: 
                     listarEmbarques(embarques);
@@ -116,7 +131,7 @@ bool switCaseEmbarque(int op, vector<Passageiros> &passageiros, vector<Roteiros>
 int menuEmbarque(){
 
      int op;
-    cout << endl<< "==== Menu Embarque ====" << endl;
+    cout << endl <<"Bem vindo a Vans TransPaGente" << endl;
     cout << "1-Incluir um Novo embarque"<< endl;
     cout << "2-Excluir registro de embarque"<< endl; // pode ser por cpf
     cout << "3-Alterar "<< endl; 
@@ -133,27 +148,40 @@ void cadastrarEmbarque(int indice_pessoa, int indice_roteiro, vector<Embarca> &e
 
     string realizada;
     Data data;//data real de embarque //struc do data
-    int duracao;// duração real;
+    //int duracao;// duração real;
 
-    cin.ignore(); 
-    cout <<"O passageiro embarcou S/N char():" <<endl;//validar esse parametro
-    getline(cin, realizada);
-    embarcar.realizada = realizada;///tipo struc
-    
     cin.ignore(); 
     cout <<"Data de embarque string(): " << endl;
     getline(cin, data.data);
     embarcar.data.data = data.data;
 
     cin.ignore(); 
-    cout <<"Hora real do embarque (int): " << endl;
-    cin >> data.hora;
-    embarcar.data.hora = data.hora;
+    // cout <<"Hora real do embarque (int): " << endl;
+    // cin >> data.hora;
     
-    cout <<"Duracao da Vigem int(): " << endl;
-    cin >> duracao;
+     // Obter a hora atual
+    time_t rawtime;
+    struct tm* timeinfo;
 
-    embarcar.duracao = duracao;
+    time(&rawtime);
+    timeinfo = localtime(&rawtime);
+
+    // Calcular os segundos desde a meia-noite
+    int segundosDesdeMeiaNoite = timeinfo->tm_hour * 3600 + timeinfo->tm_min * 60 + timeinfo->tm_sec;
+
+    embarcar.data.hora = segundosDesdeMeiaNoite;
+    
+    // cout <<"Duracao da Vigem int(): " << endl;
+    // cin >> duracao;
+    embarcar.duracao = 1;
+
+
+    cin.ignore(); 
+    cout <<"O passageiro embarcou S/N char():" <<endl;//validar esse parametro
+    getline(cin, realizada);
+    embarcar.realizada = realizada;///tipo struc
+    
+    
     
 
     embarcar.passageiro = passageiros[indice_pessoa]; //passando os dados de um passageiro
@@ -172,7 +200,7 @@ void excluirEmbarque(vector<Embarca>& embarques, int indice) {
     }
 }
 
-void listarEmbarques(vector<Embarca>& embarques) {
+void listarEmbarques(vector<Embarca>& embarques){
    
     if (!embarques.empty()){
         cout <<endl<< "Lista de Embarques:" << endl;
@@ -218,3 +246,99 @@ int buscarEmbarques(vector<Embarca>& embarques, int codigo, string& cpf) {
     return -1;
 }
 
+// Função para alterar campos de uma estrutura Embarca
+void alterarEmbarca(vector<Embarca>& vetorEmbarca, int indice) {
+    if (indice < 0 ) {
+        cout << "Embarque não localizado" << endl;
+        return;
+    }
+
+    Embarca& embarca = vetorEmbarca[indice];
+
+    char confirmacao;
+
+    // Perguntar se deseja alterar o campo 'realizada'
+    cout << "Deseja alterar o campo 'realizada' (S/N)? ";
+    cin >> confirmacao;
+    if (confirmacao == 'S' || confirmacao == 's') {
+        cout << "Nova 'realizada': ";
+        cin >> embarca.realizada;
+    }
+
+    // Perguntar se deseja alterar o campo 'data'
+    cout << "Deseja alterar o campo 'data' (S/N)? ";
+    cin >> confirmacao;
+    if (confirmacao == 'S' || confirmacao == 's') {
+        cout << "Nova data de embarque: ";
+        cin >> embarca.data.data;
+        cout << "Nova hora de embarque: ";
+        cin >> embarca.data.hora;
+    }
+
+    // Perguntar se deseja alterar o campo 'duracao'
+    cout << "Deseja alterar o campo 'duracao' (S/N)? ";
+    cin >> confirmacao;
+    if (confirmacao == 'S' || confirmacao == 's') {
+        cout << "Nova duração: ";
+        cin >> embarca.duracao;
+    }
+
+    // Perguntar se deseja alterar o campo 'passageiro'
+    cout << "Deseja alterar o campo 'passageiro' (S/N)? ";
+    cin >> confirmacao;
+    if (confirmacao == 'S' || confirmacao == 's') {
+        Passageiros novoPassageiro;
+        cout << "Novo nome do passageiro: ";
+        cin >> novoPassageiro.nome;
+        cout << "Novo CPF: ";
+        cin >> novoPassageiro.cpf;
+        cout << "Nova data de nascimento: ";
+        cin >> novoPassageiro.dataNascimento;
+        cout << "Novo número de autorização: ";
+        cin >> novoPassageiro.numAltorizacao;
+        embarca.passageiro = novoPassageiro;
+    }
+
+    // Perguntar se deseja alterar o campo 'roteiro'
+    cout << "Deseja alterar o campo 'roteiro' (S/N)? ";
+    cin >> confirmacao;
+    if (confirmacao == 'S' || confirmacao == 's') {
+        Roteiros novoRoteiro;
+        cout << "Novo código do roteiro: ";
+        cin >> novoRoteiro.codigo;
+        cout << "Nova origem: ";
+        cin >> novoRoteiro.origem;
+        cout << "Novo destino: ";
+        cin >> novoRoteiro.destino;
+        cout << "Nova data e hora prevista: ";
+        cin >> novoRoteiro.data_hora_prevista.data;
+        cin >> novoRoteiro.data_hora_prevista.hora;
+        embarca.roteiro = novoRoteiro;
+    }
+
+    // Solicitar confirmação
+    cout << "Confirmar alterações (S/N)? ";
+    cin >> confirmacao;
+
+    if (confirmacao == 'S' || confirmacao == 's') {
+        cout << "Embarca alterada com sucesso." << endl;
+    } else {
+        cout << "Alterações canceladas." << endl;
+        // Reverter as alterações se necessário
+    }
+}
+
+void listarPassageirosEmbarcados(const vector<Embarca> &vetorEmbarca, int codigoRoteiro)
+{
+    cout << "Passageiros embarcados no roteiro de código " << codigoRoteiro << ":" << endl;
+
+    for (const Embarca &passageiro : vetorEmbarca)
+    {
+        if (passageiro.roteiro.codigo == codigoRoteiro)
+        {
+            cout << "Código do Passageiro: " << passageiro.roteiro.codigo << endl << " - Nome: " << passageiro.passageiro.nome << endl;
+        }
+    }
+
+    cout << "Fim da lista de passageiros." << endl;
+}
