@@ -6,15 +6,17 @@
 #include "passageiro.cpp" //arquivo que gerencia os passageiros;
 #include "roteiro.cpp"//arquivo que gerencia os roteiros
 #include "embarca.cpp"
+#include "ocorrencia.cpp"
 
 using namespace std;
 int menuPrincipal();
-bool gerenciarAcessos(int op, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros, vector<Embarca> &embarques);
+bool gerenciarAcessos(int op, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros, vector<Embarca> &embarques,  vector<Ocorrencia> &ocorrencias );
 
 int main (){
     vector<Passageiros> passageiros;//vectores principais
     vector<Roteiros> roteiros;//vectores principais
     vector<Embarca> embarques;//vectores principais
+    vector<Ocorrencia> ocorrencias;//vectores principais
    
     Passageiros novaPassoa;
     novaPassoa.nome = "Daniel";
@@ -36,14 +38,15 @@ int main (){
 
     do{
         //1ºparamentro uma opcao escolhida, 2º e 3º os vectores;
-        continuar = gerenciarAcessos(menuPrincipal(), passageiros, roteiros, embarques);
+        continuar = gerenciarAcessos(menuPrincipal(), passageiros, roteiros, embarques, ocorrencias);
         //o retono é true ou false para encerrar o acesso ou sair o while. na variavel continuar   
     } while (continuar);//continuar a execução do  gerenciarAcessos sai do programa;
     
     return 0;
 } 
 
-bool gerenciarAcessos(int op, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros, vector<Embarca> &embarques){
+bool gerenciarAcessos(int op, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros, 
+vector<Embarca> &embarques,  vector<Ocorrencia> &ocorrencias){
      switch (op){
         case 1:
             gestaoDePassageiros(passageiros);// vai para o arquivo passageiro.cpp
@@ -53,6 +56,9 @@ bool gerenciarAcessos(int op, vector<Passageiros> &passageiros, vector<Roteiros>
             break;
         case 3:
             gestaoDeEmbarque(passageiros, roteiros, embarques);//3 vectores
+            break;
+        case 4:
+            gestaoOcorrencia(ocorrencias, embarques, passageiros, roteiros);//4 vectores
             break;
         case 0:
            return false;
@@ -68,6 +74,7 @@ int menuPrincipal(){
     cout << "1-Gestao de Passageiro" <<endl;
     cout << "2-Gerenciar Roteiro" <<endl;
     cout << "3-Gerenciar Embarque" <<endl;
+    cout << "4-Gerenciar Ocorrencias" <<endl;
     cout << "0-Sair" <<endl;
     cout << "Digite uma opcao:";
 
