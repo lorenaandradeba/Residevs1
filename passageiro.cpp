@@ -1,7 +1,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include <limits>
+
 
 
 //falta trocar a forma que altera deve-se perguntar.
@@ -119,20 +119,20 @@ void cadastrarPessoa(vector<Passageiros> &novaPessoa) {
     cin.ignore();
    
     do{
-        cout << "Digite o CPF: ";
+        cout << "Digite o CPF string(): ";
         getline(cin, cpf);
        
     }while (obterCPFValido(cpf));
 
     novoPassageiro.cpf = cpf;
     
-    cout << "Digite o nome: ";
+    cout << "Digite o nome string(): ";
     getline(cin, nome);
     
     novoPassageiro.nome = validarCampo(nome, "nome");
 
     do{
-        cout << "Digite a Data de nascimento (DD/MM/AAAA): ";
+        cout << "Digite a Data de nascimento (DD/MM/AAAA) string(): ";
         getline(cin, dataNascimento);
     } while (!validarData(dataNascimento));// Valida a data usando a função validarData
    

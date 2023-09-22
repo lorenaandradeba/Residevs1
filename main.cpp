@@ -16,31 +16,6 @@ int main (){
     vector<Roteiros> roteiros;//vectores principais
     vector<Embarca> embarques;//vectores principais
    
-    Passageiros novaPassoa;
-    novaPassoa.nome = "Daniel";
-    novaPassoa.cpf = "1";
-    novaPassoa.numAltorizacao = 1;
-    novaPassoa.dataNascimento = "22/03/2001";
-
-    passageiros.push_back(novaPassoa);
-    
-    Roteiros novoRoteiro;
-    novoRoteiro.codigo = 1;
-    novoRoteiro.origem = "Ilheus";
-    novoRoteiro.destino = "Serra Grande";
-    novoRoteiro.data_hora_prevista.data = "25/05/2025";
-    novoRoteiro.data_hora_prevista.hora = 2;
-    roteiros.push_back(novoRoteiro);
-
-    Embarca novoEmbaque;
-    novoEmbaque.data.data = "31/08/2023";
-    novoEmbaque.data.hora = 2; 
-    novoEmbaque.duracao = "2";
-    novoEmbaque.realizada ="S";
-    novoEmbaque.passageiro = novaPassoa;
-    novoEmbaque.roteiro = novoRoteiro;
-
-    embarques.push_back(novoEmbaque);
 
     bool continuar = true;
 

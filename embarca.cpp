@@ -8,20 +8,24 @@ using namespace std;
 struct Embarca{
     string realizada;
     Data data;//data real de embarque
-    string duracao;// duração real;
+    int duracao;// duração real;
     Passageiros passageiro;//todos os dados de passageiros
     Roteiros roteiro;//todos os dados de roteiro
    
 }; 
 
-
-int menuEmbarque();
-bool switCaseEmbarque(int op, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros, vector<Embarca> &embarques);
 void cadastraEmbaque();
 void cadastrarEmbarque(int umaPessoa, int umRoteiro, vector<Embarca> &embarques, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros);
 void listarEmbarques(vector<Embarca>& embarques);
-void exluirEmbarque(vector<Embarca>& embarques, int indice);
+void excluirEmbarque(vector<Embarca>& embarques, int indice);
 int buscarEmbarques(vector<Embarca>& embarques, int codigo, string& cpf);
+
+
+int menuEmbarque();
+bool switCaseEmbarque(int op, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros, vector<Embarca> &embarques);
+
+
+
 
 
 int gestaoDeEmbarque(vector<Passageiros> &passageiros, vector<Roteiros> &roteiros, vector<Embarca> &embarques){
@@ -41,13 +45,13 @@ bool switCaseEmbarque(int op, vector<Passageiros> &passageiros, vector<Roteiros>
 
     int indice_pessoa;//posição(indice) no meu vector para buscar
     int indice_roteiro;//posição(indice) no meu vector para buscar
-    int indice_embarque;//indice do embarque
-
+   // int indice_embarque;//indice do embarque
+    int indice_embarque;
     switch (op){
             case 1:
                     //incluir embarque
                     //solicitar cpf e o codigo do passageiro;
-                    
+                     cin.ignore();
                     cout <<endl << "Digite um CPF: ";
                     cin >> cpf;
                     cin.ignore();
@@ -68,24 +72,26 @@ bool switCaseEmbarque(int op, vector<Passageiros> &passageiros, vector<Roteiros>
                      }
                 break;
             case 2:
-                    //excluir
-                   
-                    cout << "Digite o codigo: ";
-                    cin >> codigo;
-                    
-                    cout << "Digite um CPF: ";
-                    getline(cin, cpf);
-                    cin.ignore();
-                    
-                    indice_embarque = buscarEmbarques(embarques, codigo, cpf);
-                    
-                    if(buscarEmbarques(embarques, codigo,cpf)>=0){
-                        
-                        cout << "indice" << indice_embarque<<endl;
-                    }else{
-                        cout << "Não encontrou o indice:" << indice_embarque<<endl;
-                    }
-                    
+
+                cin.ignore();
+                cout << "Digite um CPF: ";
+                getline(cin, cpf);
+
+                cin.ignore();
+                cout << "Digite o codigo: ";
+                cin >> codigo;
+                
+                
+               
+
+                indice_embarque = buscarEmbarques(embarques, codigo, cpf);
+
+                if (indice_embarque != -1) {
+                    excluirEmbarque(embarques, indice_embarque);
+                } else {
+                    cout <<endl<< "Embarque não encontrado." << endl;
+                }
+
                 break;
             case 3:
                     // Alterar;
@@ -110,7 +116,7 @@ bool switCaseEmbarque(int op, vector<Passageiros> &passageiros, vector<Roteiros>
 int menuEmbarque(){
 
      int op;
-    cout << "Bem vindo a Vans TransPaGente" << endl;
+    cout << endl <<"Bem vindo a Vans TransPaGente" << endl;
     cout << "1-Incluir um Novo embarque"<< endl;
     cout << "2-Excluir registro de embarque"<< endl; // pode ser por cpf
     cout << "3-Alterar "<< endl; 
@@ -127,48 +133,33 @@ void cadastrarEmbarque(int indice_pessoa, int indice_roteiro, vector<Embarca> &e
 
     string realizada;
     Data data;//data real de embarque //struc do data
-    string duracao;// duração real;
+    int duracao;// duração real;
 
-    cout <<"O passageiro embarcou S/N:" <<endl;//validar esse parametro
+    cin.ignore(); 
+    cout <<"O passageiro embarcou S/N char():" <<endl;//validar esse parametro
     getline(cin, realizada);
-    cin.ignore(); 
     embarcar.realizada = realizada;///tipo struc
-
-    cout <<"Data de embarque: " << endl;
-    getline(cin, data.data);
-    cin.ignore(); 
-    embarcar.data.data = data.data;
     
-    cout <<"Hora real do embarque: " << endl;
+    cin.ignore(); 
+    cout <<"Data de embarque string(): " << endl;
+    getline(cin, data.data);
+    embarcar.data.data = data.data;
+
+    cin.ignore(); 
+    cout <<"Hora real do embarque (int): " << endl;
     cin >> data.hora;
     embarcar.data.hora = data.hora;
+    
+    cout <<"Duracao da Vigem int(): " << endl;
+    cin >> duracao;
 
-    cout <<"Duracao da Vigem: " << endl;
-    getline(cin, duracao);
-    cin.ignore();
+    embarcar.duracao = duracao;
+    
 
     embarcar.passageiro = passageiros[indice_pessoa]; //passando os dados de um passageiro
     embarcar.roteiro = roteiros[indice_roteiro]; //passando os dados de um roteiro
 
     embarques.push_back(embarcar); //Registra o Embarque na coleção de embarques
-}
-
-void listarEmbarques(vector<Embarca>& embarques) {
-    cout << "Lista de Embarques:" << endl;
-    for (const Embarca& embarque : embarques) {
-       cout << "Realizada: " << embarque.realizada << std::endl;
-       cout << "Data de Embarque: " << embarque.data.data << std::endl;
-       cout << "Hora de Embarque: " << embarque.data.hora << std::endl;
-       cout << "Duração: " << embarque.duracao << std::endl;
-       cout << "Nome do Passageiro: " << embarque.passageiro.nome << std::endl;
-       cout << "CPF do Passageiro: " << embarque.passageiro.cpf << std::endl;
-       cout << "Data de Nascimento do Passageiro: " << embarque.passageiro.dataNascimento << std::endl;
-       cout << "Número de Autorização: " << embarque.passageiro.numAltorizacao << std::endl;
-       cout << "Origem do Roteiro: " << embarque.roteiro.origem << std::endl;
-       cout << "Destino do Roteiro: " << embarque.roteiro.destino << std::endl;
-       cout << "Data e Hora Previstas: " << embarque.roteiro.data_hora_prevista.data << " " << embarque.roteiro.data_hora_prevista.hora << std::endl;
-       cout << std::endl;
-    }
 }
 
 // Função para excluir um elemento do vetor por índice
@@ -181,11 +172,49 @@ void excluirEmbarque(vector<Embarca>& embarques, int indice) {
     }
 }
 
+void listarEmbarques(vector<Embarca>& embarques) {
+   
+    if (!embarques.empty()){
+        cout <<endl<< "Lista de Embarques:" << endl;
+        for (const Embarca& embarque : embarques) {
+            cout << endl << "----------Roteiro----------" <<endl;
+
+            cout << "Origem do Roteiro: " << embarque.roteiro.origem << endl;
+            cout << "Destino do Roteiro: " << embarque.roteiro.destino << endl;
+            cout << "Data e Hora Previstas: " << embarque.roteiro.data_hora_prevista.data << " " << embarque.roteiro.data_hora_prevista.hora << endl;
+                
+            cout << endl << "----------Dados do Passageiro----------" <<endl;
+            cout << "CPF do Passageiro: " << embarque.passageiro.cpf << endl;
+            cout << "Nome do Passageiro: " << embarque.passageiro.nome << endl;
+            cout << "Data de Nascimento: " << embarque.passageiro.dataNascimento << endl;
+            cout << "Autorização: " << embarque.passageiro.dataNascimento <<endl;
+
+            cout << endl << "----------Embarque---------" <<endl;
+            cout << "Realizada: " << embarque.realizada << std::endl;
+            cout << "Data de Embarque: " << embarque.data.data << std::endl;
+            cout << "Hora de Embarque: " << embarque.data.hora << std::endl;
+            cout << "Duracao da viagem: " << embarque.duracao << std::endl;
+       }
+    }else{
+        cout <<endl<<"Embarques não localizados" <<endl;
+    }
+}
+
 int buscarEmbarques(vector<Embarca>& embarques, int codigo, string& cpf) {
-    for (int i = 0; i < embarques.size(); ++i) {
-        if (embarques[i].roteiro.codigo == codigo && embarques[i].passageiro.cpf == cpf) {
-            return i; // Retorna o índice onde o elemento foi encontrado
+    // Declara um iterador para percorrer o vetor
+    vector<Embarca>::iterator it;
+
+    // Percorre o vetor usando o iterador
+    for (it = embarques.begin(); it != embarques.end(); ++it) {
+        if (it->passageiro.cpf == cpf && it->roteiro.codigo == codigo) {
+            // Encontrou um embarque com o CPF e código correspondentes
+            // Calcula o índice do embarque encontrado
+            int indice = distance(embarques.begin(), it);
+            return indice; // Retorna o índice do embarque encontrado
         }
     }
-    return -1; // Retorna -1 se o elemento não for encontrado
+
+    // Se não encontrou, retorna -1 para indicar que o embarque não foi encontrado
+    return -1;
 }
+
