@@ -15,7 +15,7 @@ void menuOcorrenciaRoteiro();
 void cadastrarOcorrenciaRoteiro(vector<OcorrenciaRoteiro> &ocorrencias, vector<Roteiros> &roteiros);
 Roteiros retornaRoteiro(vector<Roteiros> &roteiros, int codigo);
 void listarTudo(vector<OcorrenciaRoteiro>& Ocorrencias);
-
+void excluirOcorrenciaRoteiro(vector<OcorrenciaRoteiro> &ocorrencias, vector<Roteiros> &roteiros);
 int gestaoOcorrenciaRoteiro(vector<OcorrenciaRoteiro> &ocorrencias, vector<Roteiros> &roteiros){
     bool validar = true;
     int op;
@@ -114,6 +114,40 @@ void cadastrarOcorrenciaRoteiro(vector<OcorrenciaRoteiro> &ocorrencias, vector<R
          cout << endl << "Dados Invalidos"<< endl;
     }
 
+}
+//funções
+void excluirOcorrencia(vector<OcorrenciaRoteiro> &ocorrencia, vector<Roteiros> &roteiros){
+    int codigo;
+    int indice_roteiro;
+    bool encontrou = false;
+                    
+    cout << "Digite o codigo: ";
+    cin >> codigo;
+    cout<<endl;
+    
+    indice_roteiro = localizarRoteiro(roteiros, codigo);//pega o indece -1 não encontrou ou é a posição
+    
+
+    if ( indice_roteiro != -1  )
+    {
+        for (size_t i = 0; i < ocorrencia.size(); i++) {
+            if (ocorrencia[i].roteiro.codigo == codigo){
+                encontrou = true;
+                ocorrencia.erase(ocorrencia.begin() + i);
+
+                cout << "-----------------------------------------------------------------------------" << endl;
+                cout << "\t\tOcorrência do Roteiro "<<codigo<<" foi excluido com sucesso." << endl;
+                cout << "-----------------------------------------------------------------------------" << endl;
+            }
+        }
+        if (!encontrou){
+            cout << "-----------------------------------------------------------------------------" << endl;
+            cout << "\t\tOps! Ocorrência não encontrada." << endl;
+            cout << "-----------------------------------------------------------------------------" << endl;
+        }
+    } else {
+         cout << endl << "Dados Invalidos" << endl;
+    }
 }
 void menuOcorrenciaRoteiro(){
     cout << endl<< "==== Menu Ocorrência por Roteiro ====" << endl;
