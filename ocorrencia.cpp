@@ -25,19 +25,19 @@ int gestaoOcorrencia(vector<Embarca> &embarques){
         cin >> op;
         switch (op){
             case 1:
-                cadastrarOcorrencia(ocorrencias, embarques, passageiros, roteiros);
+                cadastrarOcorrencia(embarques);
                 break;
             case 2:
-                excluirOcorrencia(ocorrencias, embarques, passageiros, roteiros);// excluir
+                excluirOcorrencia(embarques);// excluir
                 break;
             case 3:
                     // Alterar;
                 break;
             case 4: 
-                listarPorPassageiro(ocorrencias);   // Listar passageiro;
+                listarPorPassageiro(embarques);   // Listar passageiro;
                 break;
             case 5:
-                listarPorRoteiro(ocorrencias);   // Listar roteiro;
+                listarPorRoteiro(embarques);   // Listar roteiro;
                 break;
             case 0:
                 validar = false;
