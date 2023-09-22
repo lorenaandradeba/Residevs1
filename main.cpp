@@ -32,6 +32,16 @@ int main (){
     novoRoteiro.data_hora_prevista.hora = 2;
     roteiros.push_back(novoRoteiro);
 
+    Embarca novoEmbaque;
+    novoEmbaque.data.data = "31/08/2023";
+    novoEmbaque.data.hora = 2; 
+    novoEmbaque.duracao = "2";
+    novoEmbaque.realizada ="S";
+    novoEmbaque.passageiro = novaPassoa;
+    novoEmbaque.roteiro = novoRoteiro;
+
+    embarques.push_back(novoEmbaque);
+
     bool continuar = true;
 
     do{
