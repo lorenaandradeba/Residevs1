@@ -8,17 +8,15 @@ struct Ocorrencia{
     int hora;
     int numApolice;
     
-    Embarca embarque;
 }; 
 
 void menuOcorrencia();
-void cadastrarOcorrencia(vector<Ocorrencia> &ocorrencia, vector<Embarca> &embarques, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros);
-Embarca localizarEmbarque(vector<Embarca> &embarques, string cpf, int codigo);
-void listarPorPassageiro(vector<Ocorrencia>& Ocorrencias);
-void listarPorRoteiro(vector<Ocorrencia>& Ocorrencias);
-void excluirOcorrencia(vector<Ocorrencia> &ocorrencia, vector<Embarca> &embarques, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros);
-void alterarOcorrencia(vector<Ocorrencia> &ocorrencia, vector<Embarca> &embarques, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros);
-int gestaoOcorrencia(vector<Ocorrencia> &ocorrencias, vector<Embarca> &embarques, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros){
+void cadastrarOcorrencia(vector<Embarca> &embarques);
+void listarPorPassageiro(vector<Embarca>& embarques);
+void listarPorRoteiro(vector<Embarca>& embarques);
+void excluirOcorrencia(vector<Embarca> &embarques);
+void alterarOcorrencia(vector<Embarca> &embarques);
+int gestaoOcorrencia(vector<Embarca> &embarques){
     bool validar = true;
     int op;
 
@@ -53,65 +51,63 @@ int gestaoOcorrencia(vector<Ocorrencia> &ocorrencias, vector<Embarca> &embarques
 
     return 0;
 }
+int obterIndiceDoEmbarque(vector<Embarca> &embarques, string cpf, int codigo);
 
-
-void listarPorPassageiro(vector<Ocorrencia>& Ocorrencias) {
+void listarPorPassageiro(vector<Embarca>& embarques) {
     string cpf;
     string nome="";
     cout <<endl << "Informe o CPF: ";
     cin.ignore();
     getline(cin, cpf);
     
-    for (const Ocorrencia& o : Ocorrencias) {
-        if(o.embarque.passageiro.cpf == cpf){
+    for (const Embarca& e : embarques) {
+        //Verifica se o cpf digitado e se tem ocorrencia para o embarque
+        if(e.passageiro.cpf == cpf && !e.ocorrencia.descricao.empty()){
             if (nome==""){
-                nome=o.embarque.passageiro.nome;
+                nome=e.passageiro.nome;
                 cout << "Lista de Ocorrencias do Passageiro: "<< nome <<":" << endl;
             }
-            cout << "Descrição: " << o.descricao << endl;
-            cout << "Data: " << o.data << std::endl;
-            cout << "Hora: " << o.hora << std::endl;
-        
-            cout << endl;
+            if (!e.ocorrencia.descricao.empty()){
+                cout << "Roteiro: " << e.roteiro.codigo << endl;
+                cout << "Descrição: " << e.ocorrencia.descricao << endl;
+                cout << "Data: " << e.data << std::endl;
+                cout << "Hora: " << e.hora << std::endl;
+            
+                cout << endl;
+                
+            }
         }
     }
 }
 
-void listarPorRoteiro(vector<Ocorrencia>& Ocorrencias) {
+void listarPorRoteiro(vector<Embarca>& embarques) {
     int codigo;
     cout <<endl << "Informe o Código: ";
     cin>>codigo;
     string nome="";
     
-    for (const Ocorrencia& o : Ocorrencias) {
-        if(o.embarque.roteiro.codigo == codigo){
+    for (const Embarca& e: embarques) {
+        if(e.roteiro.codigo == codigo && !e.ocorrencia.descricao.empty()){
             if (nome==""){
-                nome=o.embarque.roteiro.codigo;
+                nome= e.roteiro.codigo;
                 cout << "Lista de Ocorrencias do Roteiro: "<< nome <<":" << endl;
             }
-            cout << "Descrição: " << o.descricao << endl;
-            cout << "Data: " << o.data << endl;
-            cout << "Hora: " << o.hora << std::endl;
+            if (!e.ocorrencia.descricao.empty()){
+                cout << "Descrição: " << o.descricao << endl;
+                cout << "Data: " << o.data << endl;
+                cout << "Hora: " << o.hora << std::endl;
         
-            cout << endl;
+                cout << endl;
+            }
+            
         }
     }
 }
-Embarca localizarEmbarque(vector<Embarca> &embarques, string cpf, int codigo){
-    for (const Embarca &e : embarques) {
-        if (e.passageiro.cpf == cpf && e.roteiro.codigo == codigo){
-            return e;
-        }
-    }
-    return Embarca{};
-}
-void cadastrarOcorrencia(vector<Ocorrencia> &ocorrencia, vector<Embarca> &embarques, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros){
+
+void cadastrarOcorrencia(vector<Embarca> &embarques){
     int codigo;
     string cpf;
-    int indice_passageiro;
-    int indice_roteiro;
     Embarca embarque;
-
     cout <<endl << "Informe o CPF: ";
     cin.ignore();
     getline(cin, cpf);
@@ -119,52 +115,46 @@ void cadastrarOcorrencia(vector<Ocorrencia> &ocorrencia, vector<Embarca> &embarq
     cout << "Digite o codigo: ";
     cin >> codigo;
     cout<<endl;
-    ///verificar se o cpf esta cadastrado em passsageiro e verificar se roteiro esta cadastrado
-    indice_passageiro = localizarPassageiroPorCPF(passageiros, cpf);//pega o indece -1 não encontrou ou é a posição
-    indice_roteiro = localizarRoteiro(roteiros, codigo);//pega o indece -1 não encontrou ou é a posição
-    embarque = localizarEmbarque(embarques, cpf, codigo);
+    
+    for (const Embarca &e : embarques) {
+        if (e.passageiro.cpf == cpf && e.roteiro.codigo == codigo){
+            cout << endl <<"Dados Validos!"<< endl;
+            //CadastarOcorrencia
+            string descricao;
+            string data;
+            int hora;
+            int numApolice;
+            cout <<"Descreva o que aconteceu:" <<endl;
+            cin.ignore(); 
+            getline(cin, descricao);
+            
+            cout <<"Informe a data: " << endl;
+            cin.ignore(); 
+            getline(cin, data);
 
-    if((indice_roteiro != -1) && (indice_passageiro !=-1)){
-        cout << endl <<"Dados Validos!"<< endl;
-        //CadastarOcorrencia
-        string descricao;
-        string data;
-        int hora;
-        int numApolice;
-        cout <<"Descreva o que aconteceu:" <<endl;
-        cin.ignore(); 
-        getline(cin, descricao);
-           
-        cout <<"Informe a data: " << endl;
-        cin.ignore(); 
-        getline(cin, data);
+            cout <<"Informe a hora: " << endl;
+            cin >> hora;
+            
+            cout <<"Informe o numero do Apolice: " << endl;
+            cin >> numApolice;
 
-        cout <<"Informe a hora: " << endl;
-        cin >> hora;
-        
-        cout <<"Informe o numero do Apolice: " << endl;
-        cin >> numApolice;
-        Ocorrencia ocorrenciaAtual;
+            Ocorrencia ocorrenciaAtual;
 
-        ocorrenciaAtual.descricao = descricao;
-        ocorrenciaAtual.data = data;
-        ocorrenciaAtual.hora = hora;
-        ocorrenciaAtual.numApolice = numApolice;
-        ocorrenciaAtual.embarque = embarque;
-        
-
-        ocorrencia.push_back(ocorrenciaAtual); //Registra a ocorrencia
+            ocorrenciaAtual.descricao = descricao;
+            ocorrenciaAtual.data = data;
+            ocorrenciaAtual.hora = hora;
+            ocorrenciaAtual.numApolice = numApolice;
+            
+            embarque.ocorrencia = ocorrenciaAtual;
+        }
     }else{
          cout << endl << "Dados Invalidos"<< endl;
     }
-
 }
 //funções
-void excluirOcorrencia(vector<Ocorrencia> &ocorrencia, vector<Embarca> &embarques, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros){
+void excluirOcorrencia(vector<Embarca> &embarques){
     int codigo;
     string cpf;
-    int indice_passageiro;
-    int indice_roteiro;
     string nomePassageiro;
     bool encontrou = false;
     cout <<endl << "Informe o CPF: ";
@@ -174,40 +164,29 @@ void excluirOcorrencia(vector<Ocorrencia> &ocorrencia, vector<Embarca> &embarque
     cout << "Digite o codigo: ";
     cin >> codigo;
     cout<<endl;
-    ///verificar se o cpf esta cadastrado em passsageiro e verificar se roteiro esta cadastrado
-    indice_passageiro = localizarPassageiroPorCPF(passageiros, cpf);//pega o indece -1 não encontrou ou é a posição
-    indice_roteiro = localizarRoteiro(roteiros, codigo);//pega o indece -1 não encontrou ou é a posição
-    
+    for (size_t i = 0; i < embarques.size(); i++) {
+        if (embarques[i].passageiro.cpf == cpf && embarques[i].roteiro.codigo == codigo){
+           encontrou = true;
+           nomePassageiro = embarques[i].passageiro.nome;
+           embarques[i].ocorrencia = {};
 
-    if ( (indice_roteiro != -1) && (indice_passageiro != -1) )
-    {
-        for (size_t i = 0; i < ocorrencia.size(); i++) {
-            if (ocorrencia[i].embarque.passageiro.cpf == cpf && ocorrencia[i].embarque.roteiro.codigo == codigo){
-                encontrou = true;
-                nomePassageiro = ocorrencia[i].embarque.passageiro.nome;
-                ocorrencia.erase(ocorrencia.begin() + i);
-
-                cout << "-----------------------------------------------------------------------------" << endl;
-                cout << "\t\tOcorrência de "<<nomePassageiro<<" do Roteiro "<<codigo<<" foi excluido com sucesso." << endl;
-                cout << "-----------------------------------------------------------------------------" << endl;
-            }
+           cout << "-----------------------------------------------------------------------------" << endl;
+           cout << "\t\tOcorrência de "<<nomePassageiro<<" do Roteiro "<<codigo<<" foi excluido com sucesso." << endl;
+           cout << "-----------------------------------------------------------------------------" << endl;
         }
-        if (!encontrou){
-            cout << "-----------------------------------------------------------------------------" << endl;
-            cout << "\t\tOps! Ocorrência não encontrada." << endl;
-            cout << "-----------------------------------------------------------------------------" << endl;
-        }
-    } else {
-         cout << endl << "Dados Invalidos" << endl;
+    }
+    if (!encontrou){
+        cout << "-----------------------------------------------------------------------------" << endl;
+        cout << "\t\tOps! Ocorrência não encontrada." << endl;
+        cout << "-----------------------------------------------------------------------------" << endl;
     }
 }
-void alterarOcorrencia(vector<Ocorrencia> &ocorrencia, vector<Embarca> &embarques, vector<Passageiros> &passageiros, vector<Roteiros> &roteiros){
+
+void alterarOcorrencia(vector<Embarca> &embarques)
+{
     int codigo;
     string cpf;
-    int indice_passageiro;
-    int indice_roteiro;
-    int indice_ocorrencia;
-    Embarca embarque;
+    int indice_embarque;
 
     cout <<endl << "Informe o CPF: ";
     cin.ignore();
@@ -217,14 +196,15 @@ void alterarOcorrencia(vector<Ocorrencia> &ocorrencia, vector<Embarca> &embarque
     cin >> codigo;
     cout<<endl;
 
-    ///verificar se o cpf esta cadastrado em passsageiro e verificar se roteiro esta cadastrado
-    indice_passageiro = localizarPassageiroPorCPF(passageiros, cpf);//pega o indece -1 não encontrou ou é a posição
-    indice_roteiro = localizarRoteiro(roteiros, codigo);//pega o indece -1 não encontrou ou é a posição
-    embarque = localizarEmbarque(embarques, cpf, codigo);
-    indice_ocorrencia = 0; //VER ISSOA QUI
+    // localizar o índice do embarque a ser alterado
+    indice_embarque = obterIndiceDoEmbarque(embarques, cpf, codigo);
 
-    if ( (indice_roteiro != -1) && (indice_passageiro != -1) && (indice_ocorrencia != -1)) {
-        cout << endl <<"Dados Validos!"<< endl;
+    if ( indice_embarque != -1 ) 
+    {
+        cout << "Dados Validos!" << endl;
+
+        string nomePassageiro = embarques[i].passageiro.nome;
+        
         //AlterarOcorrencia
         string flag;
         string descricao;
@@ -240,7 +220,7 @@ void alterarOcorrencia(vector<Ocorrencia> &ocorrencia, vector<Embarca> &embarque
             cin.ignore(); 
             getline(cin, descricao);
         } else {
-            descricao = ocorrencia[indice_ocorrencia].descricao;
+            embarques[indice_embarque].ocorrencia.descricao = descricao;
         }
         
         cout << "Deseja alterar a data (s/n)? ";
@@ -251,7 +231,7 @@ void alterarOcorrencia(vector<Ocorrencia> &ocorrencia, vector<Embarca> &embarque
             cin.ignore(); 
             getline(cin, data);
         } else {
-            data = ocorrencia[indice_ocorrencia].data;
+            embarques[indice_embarque].ocorrencia.data = data;
         }
 
         cout << "Deseja alterar a hora (s/n)? ";
@@ -261,7 +241,7 @@ void alterarOcorrencia(vector<Ocorrencia> &ocorrencia, vector<Embarca> &embarque
             cout <<"Informe a hora: " << endl;
             cin >> hora;
         } else {
-            hora = ocorrencia[indice_ocorrencia].hora;
+            embarques[indice_embarque].ocorrencia.hora = hora;
         }
 
         cout << "Deseja alterar o numero do Apolice (s/n)? ";
@@ -271,11 +251,35 @@ void alterarOcorrencia(vector<Ocorrencia> &ocorrencia, vector<Embarca> &embarque
             cout <<"Informe o numero do Apolice: " << endl;
             cin >> numApolice;
         } else {
-            numApolice = ocorrencia[indice_ocorrencia].numApolice;
+            embarques[indice_embarque].ocorrencia.numApolice = numApolice;
         }
-    } else {
-         cout << endl << "Dados Invalidos" << endl;
+
+        cout << "-----------------------------------------------------------------------------" << endl;
+        cout << "\t\tOcorrência de "<<nomePassageiro<<" do Roteiro "<<codigo<<" foi alterada com sucesso." << endl;
+        cout << "-----------------------------------------------------------------------------" << endl;
+    } 
+    else {
+        cout << "Dados Invalidos!" << endl;
+        cout << "-----------------------------------------------------------------------------" << endl;
+        cout << "\t\tOps! Ocorrência não encontrada." << endl;
+        cout << "-----------------------------------------------------------------------------" << endl;
     }
+} 
+
+int obterIndiceDoEmbarque(vector<Embarca> &embarques, string cpf, int codigo)
+{
+    int indice_embarque = -1;
+    int i = 0;
+
+    for (Embarca embarque: embarques) {
+        if ( embarque.passageiro.cpf == cpf && embarque.roteiro.codigo == codigo ) {
+            indice_embarque = i;
+        }
+
+        i++;
+    }
+
+    return indice_embarque;
 }
 void menuOcorrencia(){
     cout << endl<< "==== Menu Ocorrência ====" << endl;
