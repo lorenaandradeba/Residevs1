@@ -239,6 +239,7 @@ void listarRoteiros(const vector<Roteiros>& roteiros) {
         }
     }
 }
+
 // Função exibir menuRoteiro
 int menuRoteiro(){
     int op;
