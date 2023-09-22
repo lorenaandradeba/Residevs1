@@ -5,7 +5,13 @@
 
 using namespace std;
 
-
+struct Ocorrencia{
+    string descricao;
+    string data;
+    int hora;
+    int numApolice;
+    
+}; 
 struct Embarca{
     string realizada;
     Data data;//data real de embarque

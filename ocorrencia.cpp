@@ -2,13 +2,6 @@
 #include <vector>
 
 using namespace std;
-struct Ocorrencia{
-    string descricao;
-    string data;
-    int hora;
-    int numApolice;
-    
-}; 
 
 void menuOcorrencia();
 void cadastrarOcorrencia(vector<Embarca> &embarques);
@@ -67,20 +60,19 @@ void listarPorPassageiro(vector<Embarca>& embarques) {
     
     for (const Embarca& e : embarques) {
         //Verifica se o cpf digitado e se tem ocorrencia para o embarque
-        if(e.passageiro.cpf == cpf && !e.ocorrencia.descricao.empty()){
+        if(e.passageiro.cpf == cpf){
             if (nome==""){
                 nome=e.passageiro.nome;
                 cout << "Lista de Ocorrencias do Passageiro: "<< nome <<":" << endl;
             }
-            if (!e.ocorrencia.descricao.empty()){
+            
                 cout << "Roteiro: " << e.roteiro.codigo << endl;
                 cout << "Descrição: " << e.ocorrencia.descricao << endl;
-                cout << "Data: " << e.data << std::endl;
-                cout << "Hora: " << e.hora << std::endl;
+                cout << "Data: " << e.data.data << endl;
+                cout << "Hora: " << e.duracao << endl;
             
                 cout << endl;
-                
-            }
+            
         }
     }
 }
@@ -92,18 +84,17 @@ void listarPorRoteiro(vector<Embarca>& embarques) {
     string nome="";
     
     for (const Embarca& e: embarques) {
-        if(e.roteiro.codigo == codigo && !e.ocorrencia.descricao.empty()){
+        if(e.roteiro.codigo == codigo){
             if (nome==""){
                 nome= e.roteiro.codigo;
                 cout << "Lista de Ocorrencias do Roteiro: "<< nome <<":" << endl;
             }
-            if (!e.ocorrencia.descricao.empty()){
-                cout << "Descrição: " << o.descricao << endl;
-                cout << "Data: " << o.data << endl;
-                cout << "Hora: " << o.hora << std::endl;
+                cout << "Descrição: " << e.ocorrencia.descricao << endl;
+                cout << "Data: " << e.data.data << endl;
+                cout << "Hora: " << e.duracao << endl;
         
                 cout << endl;
-            }
+            
             
         }
     }
@@ -121,9 +112,8 @@ void cadastrarOcorrencia(vector<Embarca> &embarques){
     cin >> codigo;
     cout<<endl;
     
-    for (const Embarca &e : embarques) {
+    for (Embarca &e : embarques) {
         if (e.passageiro.cpf == cpf && e.roteiro.codigo == codigo){
-            cout << endl <<"Dados Validos!"<< endl;
             //CadastarOcorrencia
             string descricao;
             string data;
@@ -143,18 +133,16 @@ void cadastrarOcorrencia(vector<Embarca> &embarques){
             cout <<"Informe o numero do Apolice: " << endl;
             cin >> numApolice;
 
-            Ocorrencia ocorrenciaAtual;
-
-            ocorrenciaAtual.descricao = descricao;
-            ocorrenciaAtual.data = data;
-            ocorrenciaAtual.hora = hora;
-            ocorrenciaAtual.numApolice = numApolice;
+            embarque.ocorrencia.descricao = descricao;
+            embarque.ocorrencia.data = data;
+            embarque.ocorrencia.hora = hora;
+            embarque.ocorrencia.numApolice = numApolice;
             
-            embarque.ocorrencia = ocorrenciaAtual;
+            return;
         }
-    }else{
-         cout << endl << "Dados Invalidos"<< endl;
     }
+    cout << "\t\tOps! Não encontrei os dados." << endl;
+    
 }
 //funções
 void excluirOcorrencia(vector<Embarca> &embarques){
@@ -333,10 +321,10 @@ void registrarOcorrenciaPorRoteiro(vector<Embarca> &embarques){
 void listarTodasOcorrencias(vector<Embarca>& embarques) {
     for (Embarca& e : embarques) {
         std::cout<< endl << "Descrição: " << e.ocorrencia.descricao << std::endl;
-        std::cout << "Data: " << e.ocorrencia.data.data << std::endl; 
+        std::cout << "Data: " << e.ocorrencia.data << std::endl; 
         std::cout << "Número da Apólice: " << e.ocorrencia.numApolice << std::endl;
-        std::cout << "Embarque: " << e.ocorrencia.embarque.roteiro.codigo << std::endl; 
-        std::cout << "Passageiro: " << e.ocorrencia.embarque.passageiro.nome << std::endl; 
+        std::cout << "Embarque: " << e.roteiro.codigo << std::endl; 
+        std::cout << "Passageiro: " << e.passageiro.nome << std::endl; 
         std::cout << "--------------------------" << std::endl;
     }
 }
@@ -347,6 +335,7 @@ void menuOcorrencia(){
     cout << "3. Alterar uma ocorrência"<< endl; //solicita o CPF e Código
     cout << "4. Listar todas as ocorrências por Passageiro" << endl; //Solicita o CPF
     cout << "5. Listar todas as ocorrências por Roteiro" << endl; //Solicita o Codigo
+    cout << "6. Registrar ocorrências por Roteiro" << endl; //Solicita o Codigo
     cout << "0. Sair" <<endl;
     cout << "Digite uma opção:";
 }
